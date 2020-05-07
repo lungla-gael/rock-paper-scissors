@@ -7,6 +7,22 @@ function computerPlay() {
     return gameOptions[random(gameOptions.length)];
 }
 
+function decideWinner(playerSelection, winningPick) {
+    if (playerSelection === winningPick) {
+        return "player";
+    } else {
+        return "computer";
+    }
+}
+
+function displayWinner(roundWinner, winningPick, otherPick) {
+    if (roundWinner === "computer") {
+        return "You Lose! "+winningPick+" beats "+otherPick+" and the "+ roundWinner + " wins!";                
+    } else {
+        return "You Win! "+winningPick+" beats "+otherPick;                
+    }
+}
+
 function playRound(playerSelection, computerSelection) {
     
     let entryList = [playerSelection,computerSelection];
@@ -17,26 +33,14 @@ function playRound(playerSelection, computerSelection) {
 
     if (playerSelection !== computerSelection) {
         if (containsRock && containsPaper) {
-            if (playerSelection === "paper") {
-                    winner = "player";                    
-            }else{
-                winner = "computer";
-            }
-            return "You Lose! Paper beats Rock and the "+ winner + " wins!";
+            winner = decideWinner(playerSelection, "paper")
+            return displayWinner(winner,"paper","rock");
         }else if (containsRock && containsScissors) {
-                if (playerSelection === "rock") {
-                        winner = "player";                    
-                }else{
-                    winner = "computer";
-                }
-                return "You Lose! Rock beats Scissors and the "+ winner + " wins!";
+            winner = decideWinner(playerSelection, "rock")
+            return displayWinner(winner,"rock","scissors");
         }else if(containsPaper && containsScissors){
-                if (playerSelection === "scissors") {
-                     winner = "player";                    
-                }else{
-                    winner = "computer";
-                }
-                return "You Lose! Scissors beats Paper and the "+ winner + " wins!";
+            winner = decideWinner(playerSelection, "scissors")
+            return displayWinner(winner,"scissors","paper");
         }else{
             return "invalid entries";
         } 
@@ -63,7 +67,7 @@ function game() {
         if (result.includes("computer")) {
             computerWins += 1;
             numberOfRounds += 1;
-        }else if (result.includes("player")){
+        }else if (result.includes("You")){
             playerWins += 1;
             numberOfRounds += 1;
         }else{
@@ -83,7 +87,7 @@ function game() {
     } else if(computerWins > playerWins){
         console.log("the computer is the overall winner");        
     }else{
-        console.log("no winner");          
+        console.log("no winner, it is a draw");          
     }
 }
 
