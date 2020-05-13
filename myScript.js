@@ -15,12 +15,57 @@ function decideWinner(playerSelection, winningPick) {
     }
 }
 
+let computerWins = 0;
+let numberOfRounds = 0;
+let playerWins = 0; 
+
 function displayWinner(roundWinner, winningPick, otherPick) {
+    const resultsContainer = document.querySelector('#resultsContainer');
+    let computerWin = document.createElement('p');
+    computerWin.classList.add('computerWin');
+    computerWin.textContent = "You Lose! "+winningPick+" beats "+otherPick+" and the "+ roundWinner + " wins!";
+    computerWin.style.color = 'red';
+    let playerWin = document.createElement('p');
+    playerWin.classList.add('playerWin');
+    playerWin.textContent = "You Win! "+winningPick+" beats "+otherPick;
+    playerWin.style.color = 'blue';
+    let tie = document.createElement('p');
+    tie.classList.add('tie');
+    tie.textContent = "its a tie! you both played " + winningPick;
+    tie.style.color = 'green';
+    let winner = document.createElement('h2');
+    winner.classList.add('winner');
+    winner.style.color = 'aqua';         
+
     if (roundWinner === "computer") {
-        return "You Lose! "+winningPick+" beats "+otherPick+" and the "+ roundWinner + " wins!";                
-    } else {
-        return "You Win! "+winningPick+" beats "+otherPick;                
+        resultsContainer.appendChild(computerWin);
+        computerWins += 1;
+        numberOfRounds += 1;
+    } else if(roundWinner === "player"){
+        resultsContainer.appendChild(playerWin);
+        playerWins += 1;
+        numberOfRounds += 1;                                
+    }else{
+        resultsContainer.appendChild(tie);
+        numberOfRounds += 1;              
     }
+
+    let roundResult = document.createElement('p');
+    roundResult.classList.add('roundResult');
+    roundResult.textContent = "computer Wins : "+ computerWins 
+                                + " player wins : " + playerWins 
+                                + " number of rounds : " + numberOfRounds;   
+    resultsContainer.appendChild(roundResult);
+
+    if (roundWinner === "computer" && computerWins === 5 && computerWins>playerWins) {
+        winner.textContent = "The Computer Wins the Game Overall";
+        resultsContainer.appendChild(winner);
+    } else if (roundWinner === "player" && playerWins === 5 && playerWins>computerWins){
+        winner.textContent = "You Win the Game Overall";
+        resultsContainer.appendChild(winner);            
+    }else{
+    }
+    return "success";
 }
 
 function playRound(playerSelection, computerSelection) {
@@ -38,57 +83,21 @@ function playRound(playerSelection, computerSelection) {
         }else if (containsRock && containsScissors) {
             winner = decideWinner(playerSelection, "rock")
             return displayWinner(winner,"rock","scissors");
-        }else if(containsPaper && containsScissors){
+        }else{
             winner = decideWinner(playerSelection, "scissors")
             return displayWinner(winner,"scissors","paper");
-        }else{
-            return "invalid entries";
-        } 
+        }
     } else {
-        return "you both have the same entries";
+        return displayWinner("Nobody",playerSelection,computerSelection);
     }
 
 }
 
 function game() {
-    let playAgain = null;
-    let computerWins = 0;
-    let playerWins = 0;
-    let numberOfRounds = 0; 
-
-    do {      
-        let playerEntry = prompt("enter rock, paper or scissors").toLowerCase();
-        console.log("you have played : " + playerEntry);  
-        let computerEntry = computerPlay();
-        console.log("the computer has played : "+ computerEntry); 
-        let result = playRound(playerEntry, computerEntry);
-        console.log(result);
-        
-        if (result.includes("computer")) {
-            computerWins += 1;
-            numberOfRounds += 1;
-        }else if (result.includes("You")){
-            playerWins += 1;
-            numberOfRounds += 1;
-        }else{
-            numberOfRounds += 1;
-            console.log("please try again");
-        }
-
-        console.log("computer Wins : "+ computerWins + "\n"
-        + "player wins : " + playerWins + "\n"
-        + "number of rounds : " + numberOfRounds);
-
-        playAgain = prompt("enter y to play again or n not to")
-    } while (playAgain === "y");
-
-    if (playerWins > computerWins) {
-        console.log("the player is the overall winner");
-    } else if(computerWins > playerWins){
-        console.log("the computer is the overall winner");        
-    }else{
-        console.log("no winner, it is a draw");          
-    }
+    let playerBtns = Array.from(document.querySelectorAll('.btn'));
+    playerBtns.forEach(playerBtn => {
+        playerBtn.addEventListener('click', () => playRound(playerBtn.textContent.toLowerCase(),computerPlay()));
+    });
 }
 
 game();
